@@ -1,20 +1,31 @@
 pipeline {
   agent none
+  
   stages {
     stage('Back-end') {
       agent {
-        docker { image 'maven:3.8.1-adoptopenjdk-11' }
+        docker { 
+          image 'maven:3.8.1-adoptopenjdk-11'
+          args '-v $HOME/.m2:/root/.m2'
+        }
       }
       steps {
         sh 'mvn --version'
+        sh 'mvn clean install'  // Example Maven build command
       }
     }
+    
     stage('Front-end') {
       agent {
-        docker { image 'node:16-alpine' }
+        docker { 
+          image 'node:16-alpine'
+          args '-v $HOME/.npm:/root/.npm'
+        }
       }
       steps {
         sh 'node --version'
+        sh 'npm --version'
+        sh 'npm install'  // Example npm install command
       }
     }
   }
